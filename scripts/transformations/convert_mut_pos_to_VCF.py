@@ -31,6 +31,7 @@ def transform_mut_pos(filepath: str):
     df['#CHROM'] = pd.to_numeric(df['#CHROM'])
     df.sort_values(by = ['#CHROM'], inplace = True)
     df['#CHROM'].replace({23:'X',24:'Y', 25:'MT'}, inplace = True)
+    df['#CHROM'] = ["chr"+str(chromosome) for chromosome in df['#CHROM']]
 
     #rearrange dataframe
     df = df[['#CHROM','POS','ID','REF','ALT','QUAL','FILTER','INFO']]
@@ -38,7 +39,7 @@ def transform_mut_pos(filepath: str):
     #add VCF header
     now = datetime.datetime.now()
     with open(f'{os.path.basename(filepath).split(".")[0]}.vcf','w') as output:
-        output.write(f'##fileformat=VCFv4.1\n##fileDate={now.strftime("%Y%m%d")}\n##source=TxttoVCFconversion\n##reference=hg19\n##INFO=<ID=SID,Number=1,Type=String,Description="Sample ID">\n')
+        output.write(f'##fileformat=VCFv4.1\n##fileDate={now.strftime("%Y%m%d")}\n##source=TxttoVCFconversion\n##reference=hg19\n##INFO=<ID=SID,Number=1,Type=String,Description="Sample ID\n')
         df.to_csv(output,sep = '\t', index = False)
 
 
